@@ -24,7 +24,6 @@ var update = function updater() {
 function timer(start) {
 
     setTimeout(function() {
-        console.log(start);
         var sql = encodeURIComponent(
             `SELECT m.match_id, radiant_win, start_time, duration, avg_mmr, player_slot, hero_id
             FROM public_matches m
