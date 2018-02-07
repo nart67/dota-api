@@ -33,36 +33,17 @@ function timer(start) {
             ` ORDER BY m.start_time ASC
             LIMIT 100`
         )
+
         request({
             uri: 'https://api.opendota.com/api/explorer?sql=' + sql,
             method: 'GET'
         }, function(err, res, body) {
             if (err) throw err;
-            let json = JSON.parse(body);
-            var game = { };
-            var games = [];
-            for (let i = 0; i < json.rows.length; i++) {
-                let row = json.rows[i];
-                if (row.match_id != game.match_id) {
-                    game = {
-                        match_id: row.match_id,
-                        radiant_win: row.radiant_win,
-                        start_time: row.start_time,
-                        duration: row.duration,
-                        avg_mmr: row.avg_mmr,
-                        radiant_team: [],
-                        dire_team: []
-                    }
-                }
-                if (row.player_slot < 100) game.radiant_team.push(row.hero_id);
-                else game.dire_team.push(row.hero_id);
-                if (game.radiant_team.length == 5
-                    && game.dire_team.length == 5) games.push(game);
-            }
-            insert(games);
-            timer(game.start_time);
+            if (res.headers['content-type'].includes('application/json')) getGames(body);
+            else timer(start);
         });
-    }, 1000, start);
+    }, 10000, start);
+
 }
 
 function insert(data) {
@@ -77,6 +58,33 @@ function insert(data) {
             });
         });
     });
+}
+
+// Sort response into game object
+function getGames(body) {
+    let json = JSON.parse(body);
+    var game = { };
+    var games = [];
+    for (let i = 0; i < json.rows.length; i++) {
+        let row = json.rows[i];
+        if (row.match_id != game.match_id) {
+            game = {
+                match_id: row.match_id,
+                radiant_win: row.radiant_win,
+                start_time: row.start_time,
+                duration: row.duration,
+                avg_mmr: row.avg_mmr,
+                radiant_team: [],
+                dire_team: []
+            }
+        }
+        if (row.player_slot < 100) game.radiant_team.push(row.hero_id);
+        else game.dire_team.push(row.hero_id);
+        if (game.radiant_team.length == 5
+            && game.dire_team.length == 5) games.push(game);
+    }
+    insert(games);
+    timer(game.start_time);
 }
 
 module.exports = update;
