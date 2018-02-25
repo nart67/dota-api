@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
             myDb.collection('games', function(err, collection) {
                 if (err) throw err;
                 collection.find(
-                    searchQuery(hero, opp)
+                    searchQuery(hero, opp, req.query.loss, req.query.side)
                 ).toArray(function(err, data) {
                     if (err) throw err;
                     res.send(data);
@@ -36,20 +36,32 @@ function validate(hero, opp) {
 }
 
 //Make search query based on input
-function searchQuery(hero, opp) {
-    if (Number.isNaN(opp)) {
-        return {
-            $or: [
-                { radiant_team: hero },
-                { dire_team: hero }
-            ]
-        };
+function searchQuery(hero, opp, loss, side) {
+    let radiant = {};
+    let dire = {};
+    loss = parseInt(loss);
+
+    radiant.radiant_team = hero;
+    dire.dire_team = hero;
+
+    if (!Number.isNaN(opp)) {
+        radiant.dire_team = opp;
+        dire.radiant_team = opp;
+    }
+
+    if (loss !== 1) {
+        radiant.radiant_win = true;
+        dire.radiant_win = false;
+    }
+
+    if (side === "radiant") {
+        return radiant;
+    }
+    else if (side === "dire") {
+        return dire;
     }
     return {
-        $or: [
-            { $and: [{ radiant_team: hero }, { dire_team: opp }] },
-            { $and: [{ dire_team: hero }, { radiant_team: opp }] }
-        ]
+        $or: [radiant, dire]
     };
 }
 
