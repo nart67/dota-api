@@ -28,7 +28,7 @@ function timer(start) {
             `SELECT m.match_id, radiant_win, start_time, duration, avg_mmr, player_slot, hero_id
             FROM public_matches m
             JOIN public_player_matches p ON p.match_id = m.match_id
-            WHERE m.avg_mmr > 5000
+            WHERE m.avg_mmr > 6000
             AND start_time > ` + start + 
             ` ORDER BY m.start_time ASC
             LIMIT 100`
