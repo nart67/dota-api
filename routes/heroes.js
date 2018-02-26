@@ -14,6 +14,7 @@ router.get('/', function(req, res, next) {
                 { localized_name: 1 }
             ).toArray(function(err, data) {
                 if (err) throw err;
+                res.set('Access-Control-Allow-Origin', '*');
                 res.send(data);
                 db.close();
             })

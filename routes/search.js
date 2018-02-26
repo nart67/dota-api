@@ -20,6 +20,7 @@ router.get('/', function(req, res, next) {
                     searchQuery(hero, opp, req.query.loss, req.query.side)
                 ).sort({ start_time: -1 }).toArray(function(err, data) {
                     if (err) throw err;
+                    res.set('Access-Control-Allow-Origin', '*');
                     res.send(data);
                     db.close();
                 })
