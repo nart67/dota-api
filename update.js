@@ -1,5 +1,5 @@
 var express = require('express');
-var url = 'mongodb://localhost:27017/';
+var url = require('./const');
 var mongo = require('mongodb').MongoClient
 var request = require('request');
 
@@ -9,7 +9,7 @@ var update = function updater() {
         if (err) throw err;
         myDb.collection('games', function(err, collection) {
             if (err) throw err;
-            collection.find().sort({start_time:+1}).limit(1).toArray(function(err, result) {
+            collection.find().sort({start_time:-1}).limit(1).toArray(function(err, result) {
                 if (err) throw err;
                 var start = 0;
                 if (result[0] != undefined) start = result[0].start_time; 
