@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
                 if (err) throw err;
                 collection.find(
                     searchQuery(hero, opp, req.query.loss, req.query.side)
-                ).toArray(function(err, data) {
+                ).sort({ start_time: -1 }).toArray(function(err, data) {
                     if (err) throw err;
                     res.send(data);
                     db.close();
