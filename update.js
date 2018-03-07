@@ -39,7 +39,7 @@ function timer(start) {
             method: 'GET'
         }, function(err, res, body) {
             if (err) throw err;
-            if (res.headers['content-type'].includes('application/json')) getGames(body);
+            if (res.headers['content-type'].includes('application/json')) getGames(body, start);
             else timer(start);
         });
     }, 10000, start);
@@ -61,7 +61,7 @@ function insert(data) {
 }
 
 // Sort response into game object
-function getGames(body) {
+function getGames(body, start) {
     let json = JSON.parse(body);
     var game = { };
     var games = [];
@@ -83,8 +83,11 @@ function getGames(body) {
         if (game.radiant_team.length == 5
             && game.dire_team.length == 5) games.push(game);
     }
-    insert(games);
-    timer(game.start_time);
+    if (games.length > 0) {
+        insert(games);
+        timer(game.start_time);
+    }
+    else timer(start);
 }
 
 module.exports = update;
