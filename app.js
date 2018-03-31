@@ -11,6 +11,7 @@ var users = require('./routes/users');
 var search = require('./routes/search');
 var heroes = require('./routes/heroes');
 var login = require('./routes/login');
+var register = require('./routes/register');
 
 var app = express();
 
@@ -29,7 +30,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Configure Passport for authentication
 var passport = require('passport');
 var passportStrategy = require('./helper/passport').strategy;
-console.log(passportStrategy);
 passport.use(passportStrategy);
 app.use(passport.initialize());
 
@@ -38,6 +38,7 @@ app.use('/users', users);
 app.use('/search', search);
 app.use('/heroes', heroes);
 app.use('/login', login);
+app.use('/register', register);
 app.get("/secret", passport.authenticate('jwt', { session: false }), function(req, res){
   res.json("Success! You can not see this without a token");
 });
