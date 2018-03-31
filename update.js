@@ -1,5 +1,5 @@
 var express = require('express');
-var url = require('./const');
+var url = require('./const').URL;
 var mongo = require('mongodb').MongoClient
 var request = require('request');
 
