@@ -5,10 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// Import routes
 var index = require('./routes/index');
 var users = require('./routes/users');
 var search = require('./routes/search');
 var heroes = require('./routes/heroes');
+var login = require('./routes/login');
 
 var app = express();
 
@@ -24,10 +26,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Configure Passport for authentication
+var passport = require('passport');
+var passportStrategy = require('./helper/passport').strategy;
+console.log(passportStrategy);
+passport.use(passportStrategy);
+app.use(passport.initialize());
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/search', search);
 app.use('/heroes', heroes);
+app.use('/login', login);
+app.get("/secret", passport.authenticate('jwt', { session: false }), function(req, res){
+  res.json("Success! You can not see this without a token");
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
