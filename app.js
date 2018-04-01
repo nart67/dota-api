@@ -15,6 +15,7 @@ var search = require('./routes/search');
 var heroes = require('./routes/heroes');
 var login = require('./routes/login');
 var register = require('./routes/register');
+var favorites = require('./routes/favorites');
 
 var app = express();
 
@@ -42,6 +43,7 @@ app.use('/search', search);
 app.use('/heroes', heroes);
 app.use('/login', login);
 app.use('/register', register);
+app.use('/favorites', passport.authenticate('jwt', { session: false }), favorites);
 app.get("/secret", passport.authenticate('jwt', { session: false }), function(req, res){
   res.json("Success! You can not see this without a token");
 });
