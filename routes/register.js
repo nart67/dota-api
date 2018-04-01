@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var users = require('../models/users');
+var User = require('../models/users').User;
 var bcrypt = require('bcrypt');
 
 router.post("/", function (req, res) {
@@ -8,9 +8,9 @@ router.post("/", function (req, res) {
         var name = req.body.name.toLowerCase();
         var password = req.body.password;
     
-        users.register(name, password, function(err, newUser) {
+        User.register(name, password, function(err, newUser) {
             if (err) {
-                res.status(401).json({
+                res.status(409).json({
                     message:"Registration error"
                 });
             } else {

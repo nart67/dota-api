@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var users = require('../models/users');
+var User = require('../models/users').User;
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 
@@ -9,7 +9,7 @@ router.post("/", function (req, res) {
         var name = req.body.name;
         var password = req.body.password;
     
-        users.findUser(name, function(err, user) {
+        User.findUser(name, function(err, user) {
             if (err || !user) {
                 res.status(401).json({message:"no such user found"});
                 return;
