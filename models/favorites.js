@@ -56,7 +56,9 @@ favoriteSchema.statics.deleteFavorite = function(id, user_id, callback) {
 }
 
 favoriteSchema.statics.getFavorites = function(user_id, callback) {
-    this.find({user_id: user_id}, null, {sort: {date_saved: -1}}, function(err, favorites) {
+    this.find({user_id: user_id}, null, {sort: {date_saved: -1}})
+        .populate('game_id')
+        .exec(function(err, favorites) {
         if (err) {
             console.log(err);
             return;
