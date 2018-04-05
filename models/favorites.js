@@ -20,6 +20,11 @@ favoriteSchema.statics.updateFavorite = function(id, user_id, newFavorite, callb
             callback(err);
             return;
         }
+        
+        if (!favorite) {
+            callback(new Error("not found"));
+            return;
+        }
 
         if (!favorite.user_id.equals(user_id)) {
             callback(new Error("unauthorized"));
@@ -43,6 +48,11 @@ favoriteSchema.statics.deleteFavorite = function(id, user_id, callback) {
             return;
         }
 
+        if (!favorite) {
+            callback(new Error("not found"));
+            return;
+        }
+        
         if (!favorite.user_id.equals(user_id)) {
             callback(new Error("unauthorized"));
             return;
