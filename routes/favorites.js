@@ -50,7 +50,7 @@ router.post('/', function(req, res) {
   });
   newFavorite.save(function(err) {
     if (err) res.status(409).json({message: "Add failed"});
-    else res.status(201).json({message: "Add successful"});
+    else res.status(201).json({message: "Add successful", favorite: newFavorite});
   })
 });
 
