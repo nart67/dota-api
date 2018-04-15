@@ -1,6 +1,5 @@
 var express = require('express');
-var url = require('../const').URL;
-var mongo = require('mongodb').MongoClient
+var Game = require('../models/games').Game;
 var router = express.Router();
 
 /* GET search. */
@@ -11,20 +10,10 @@ router.get('/', function(req, res, next) {
         res.status(500).send('Invalid Hero');
     }
     else {
-        mongo.connect(url, function(err, db) {
-            const myDb = db.db('dota2matchup');
+        let query = searchQuery(hero, opp, req.query.loss, req.query.side);
+        Game.search(query, (err, games) => {
             if (err) throw err;
-            myDb.collection('games', function(err, collection) {
-                if (err) throw err;
-                collection.find(
-                    searchQuery(hero, opp, req.query.loss, req.query.side)
-                ).sort({ start_time: -1 }).toArray(function(err, data) {
-                    if (err) throw err;
-                    res.set('Access-Control-Allow-Origin', '*');
-                    res.send(data);
-                    db.close();
-                })
-            })
+            res.send(games);
         });
     }  
 });

@@ -1,23 +1,13 @@
 var express = require('express');
-var url = require('./const').URL;
-var mongo = require('mongodb').MongoClient
+var Game = require('./models/games').Game;
 var request = require('request');
 
 var update = function updater() {
-    mongo.connect(url, function(err, db) {
-        const myDb = db.db('dota2matchup');
+    Game.mostRecent((err, games) => {
         if (err) throw err;
-        myDb.collection('games', function(err, collection) {
-            if (err) throw err;
-            collection.find().sort({start_time:-1}).limit(1).toArray(function(err, result) {
-                if (err) throw err;
-                var start = 0;
-                if (result[0] != undefined) start = result[0].start_time; 
-                timer(start);
-            });
-
-            db.close();
-        });
+        var start = 0;
+        if (games[0] != undefined) start = games[0].start_time; 
+        timer(start);
     });
 };
 
@@ -47,16 +37,8 @@ function timer(start) {
 }
 
 function insert(data) {
-    mongo.connect(url, function(err, db) {
-        const myDb = db.db('dota2matchup');
+    Game.create(data, function(err, records) {
         if (err) throw err;
-        myDb.collection('games', function(err, collection) {
-            if (err) throw err;
-            collection.insertMany(data, function(err, records) {
-                if (err) throw err;
-                db.close();
-            });
-        });
     });
 }
 
